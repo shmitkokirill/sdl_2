@@ -86,6 +86,7 @@
 
 1. Создадим Dockerfile:
 
+```dockerfile
     FROM node:10-alpine
     RUN mkdir -p /src/app
     WORKDIR /src/app
@@ -96,9 +97,11 @@
     COPY . /src/app
     EXPOSE 3000
     CMD [ "npm", "start" ] 
+```
 
 2. Создадим простую реализацию nodejs-application:
 
+```node.js
     var express = require('express');
     var path = require('path');
     var favicon = require('serve-favicon');
@@ -159,52 +162,53 @@
 
 
     module.exports = app;
+```
 
 3. Соберем Docker-образ и запустим контейнер:
 
-    docker build -t nodejs-app .
-        DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
-                    Install the buildx component to build images with BuildKit:
-                    https://docs.docker.com/go/buildx/
+        docker build -t nodejs-app .
+            DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+                        Install the buildx component to build images with BuildKit:
+                        https://docs.docker.com/go/buildx/
 
-        Sending build context to Docker daemon  14.85kB
-        Step 1/8 : FROM node:10-alpine
-        ---> aa67ba258e18
-        Step 2/8 : RUN mkdir -p /src/app
-        ---> Using cache
-        ---> 398ceafedb57
-        Step 3/8 : WORKDIR /src/app
-        ---> Using cache
-        ---> b183b6a41778
-        Step 4/8 : COPY package.json /src/app/package.json
-        ---> Using cache
-        ---> 8de149c77a10
-        Step 5/8 : RUN npm install
-        ---> Using cache
-        ---> 53f57b1cb1e0
-        Step 6/8 : COPY . /src/app
-        ---> Using cache
-        ---> 16c0610d9260
-        Step 7/8 : EXPOSE 3000
-        ---> Using cache
-        ---> 33d7318b0f08
-        Step 8/8 : CMD [ "npm", "start" ]
-        ---> Using cache
-        ---> 72f61f480878
-        Successfully built 72f61f480878
-        Successfully tagged nodejs-app:latest
-    docker run -it --name production-nodejs-app -e NODE_ENV=production -p 3000:3000 nodejs-app
+            Sending build context to Docker daemon  14.85kB
+            Step 1/8 : FROM node:10-alpine
+            ---> aa67ba258e18
+            Step 2/8 : RUN mkdir -p /src/app
+            ---> Using cache
+            ---> 398ceafedb57
+            Step 3/8 : WORKDIR /src/app
+            ---> Using cache
+            ---> b183b6a41778
+            Step 4/8 : COPY package.json /src/app/package.json
+            ---> Using cache
+            ---> 8de149c77a10
+            Step 5/8 : RUN npm install
+            ---> Using cache
+            ---> 53f57b1cb1e0
+            Step 6/8 : COPY . /src/app
+            ---> Using cache
+            ---> 16c0610d9260
+            Step 7/8 : EXPOSE 3000
+            ---> Using cache
+            ---> 33d7318b0f08
+            Step 8/8 : CMD [ "npm", "start" ]
+            ---> Using cache
+            ---> 72f61f480878
+            Successfully built 72f61f480878
+            Successfully tagged nodejs-app:latest
+        docker run -it --name production-nodejs-app -e NODE_ENV=production -p 3000:3000 nodejs-app
 
-        > scrapbook-node-docker-client-as-container@1.0.0 start /src/app
-        > node ./bin/www
+            > scrapbook-node-docker-client-as-container@1.0.0 start /src/app
+            > node ./bin/www
 
-        GET / 200 250.920 ms - 170
-        GET /stylesheets/style.css 200 7.958 ms - 110
-        GET /favicon.ico 404 45.833 ms - 160
+            GET / 200 250.920 ms - 170
+            GET /stylesheets/style.css 200 7.958 ms - 110
+            GET /favicon.ico 404 45.833 ms - 160
 
 4. В итоге получаем следующую веб страницу по адресу: "localhost:3000":
 
-    ![Рис. 2 - веб-сайт на node.js](./r_resources/node_1.png "")
+![Рис. 2 - веб-сайт на node.js](./r_resources/node_1.png "")
 
 # Проверка Docker-контейнеров на безопасность
 
@@ -213,9 +217,9 @@
 Программа анализирует конфигурацию Docker на нашем хосте. На основании данных
 сообщений, можно выполнить необходимую конфигурацию.
 
-    ![Рис. 3 - docker-bench-security](./r_resources/dbs_1.png "")
+![Рис. 3 - docker-bench-security](./r_resources/dbs_1.png "")
 
-    ![Рис. 4 - docker-bench-security](./r_resources/dbs_2.png "")
+![Рис. 4 - docker-bench-security](./r_resources/dbs_2.png "")
 
 На Рис. 3 можно наблюдать, что на машине не создано изолированное хранилище для
 Docker - это необходимо, так как Docker выполняется от суперпользователя и с
@@ -227,7 +231,7 @@ Docker - это необходимо, так как Docker выполняетс�
 помогает настроить образ под конкретные задачи, закрыв возможность
 эксплуатировать уязвимость. К примеру, проверим образ "redis":
 
-    ![Рис. 5 - trivy](./r_resources/trivy.png "")
+![Рис. 5 - trivy](./r_resources/trivy.png "")
 
 На Рис. 5 видно, что trivy обнаружила уязвимость CVE-2022-29162, которая
 обозначает, что в runc до версии 1.1.2 была обнаружена ошибка, когда `runc exec
