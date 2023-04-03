@@ -2,12 +2,14 @@
 
 1. Создадим Dockerfile:
 
+```dockerfile
     FROM nginx:alpine 
     COPY . /usr/share/nginx/html/
 
     EXPOSE 80
 
     CMD ["nginx", "-g", "daemon off;"]
+```
 
 2. Создадим простую HTML-страницу:
 
